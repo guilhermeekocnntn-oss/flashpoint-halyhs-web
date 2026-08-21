@@ -183,8 +183,14 @@
         shell.appendChild(player);
 
         await player.ruffle().load({
-          url: "./game/halYHS.swf",
+          url: "./game/halYHS.swf?v=pt-br-2",
           base: new URL("./game/", window.location.href).href,
+          urlRewriteRules: [
+            [
+              /\/game\/en\.txt(?:\?.*)?$/,
+              new URL("./game/en.txt?v=pt-br-2", window.location.href).href
+            ]
+          ],
           autoplay: "on",
           unmuteOverlay: "visible",
           scale: "showAll",
