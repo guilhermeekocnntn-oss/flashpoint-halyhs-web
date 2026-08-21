@@ -4,31 +4,169 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>Lunchroom Rumble</title>
+  <title>Meu Amigo da Escola é um Macaco — Lunchroom Rumble</title>
   <style>
-    :root { color-scheme: dark; background: #080a0f; }
+    :root {
+      color-scheme: dark;
+      background: #061a2c;
+      --ink: #08223a;
+      --paper: #ffe69a;
+      --lime: #b6dc3d;
+      --orange: #f28a2e;
+      --sky: #42b9d8;
+    }
     * { box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    html, body { width: 100%; min-height: 100%; margin: 0; }
     body {
+      position: relative;
       display: grid;
       place-items: center;
-      background: radial-gradient(circle at 50% 30%, #20273a 0, #0d1019 48%, #050609 100%);
-      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 18px;
+      background-color: #061a2c;
+      background-image:
+        linear-gradient(rgb(3 18 32 / 42%), rgb(3 18 32 / 42%)),
+        url("./assets/hallway-characters-edges-hd.png");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      font-family: "Trebuchet MS", system-ui, sans-serif;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at center, rgb(3 18 32 / 74%) 0 34%, rgb(3 18 32 / 20%) 72%),
+        linear-gradient(90deg, rgb(3 18 32 / 12%), transparent 22% 78%, rgb(3 18 32 / 12%));
+    }
+    #page {
+      position: relative;
+      z-index: 1;
+      width: min(92vw, calc((100vh - 112px) * 1.5 + 30px), 1120px);
+      filter: drop-shadow(0 22px 30px rgb(0 0 0 / 48%));
+    }
+    .school-sign {
+      position: relative;
+      z-index: 2;
+      width: fit-content;
+      max-width: calc(100% - 50px);
+      margin: 0 auto -10px;
+      padding: 8px 28px 10px;
+      transform: rotate(-1deg);
+      border: 4px solid var(--ink);
+      border-radius: 14px 10px 16px 8px;
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 6px 7px 0 var(--ink);
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .school-sign strong {
+      display: block;
+      font-size: clamp(.95rem, 2.3vw, 1.45rem);
+      letter-spacing: .055em;
+      line-height: 1.05;
+    }
+    .school-sign span {
+      display: block;
+      margin-top: 3px;
+      color: #a43e24;
+      font-size: clamp(.62rem, 1.3vw, .78rem);
+      font-weight: 800;
+      letter-spacing: .13em;
+    }
+    .game-frame {
+      position: relative;
+      padding: 11px;
+      border: 5px solid var(--ink);
+      border-radius: 20px 16px 22px 14px;
+      background:
+        linear-gradient(135deg, rgb(255 255 255 / 18%), transparent 45%),
+        var(--sky);
+      box-shadow:
+        inset 0 0 0 4px rgb(255 255 255 / 28%),
+        8px 9px 0 rgb(5 25 43 / 88%);
     }
     #game-shell {
-      width: min(100vw, 150vh);
+      position: relative;
+      width: 100%;
       aspect-ratio: 3 / 2;
-      max-height: 100vh;
+      overflow: hidden;
+      border: 4px solid var(--ink);
+      border-radius: 10px;
       background: #000;
-      box-shadow: 0 18px 70px rgb(0 0 0 / 65%);
+      box-shadow: inset 0 0 24px rgb(0 0 0 / 80%);
     }
     ruffle-player { width: 100%; height: 100%; display: block; }
-    #error { display: none; max-width: 42rem; padding: 1.25rem; line-height: 1.5; }
+    #error { display: none; max-width: 42rem; padding: 1.25rem; color: white; line-height: 1.5; }
+    .game-frame::before,
+    .game-frame::after {
+      position: absolute;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--ink);
+      border-radius: 50%;
+      color: var(--ink);
+      font-size: 19px;
+      font-weight: 900;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+    .game-frame::before {
+      content: "!";
+      top: -15px;
+      left: -17px;
+      transform: rotate(-12deg);
+      background: var(--orange);
+    }
+    .game-frame::after {
+      content: "★";
+      right: -17px;
+      bottom: -15px;
+      transform: rotate(10deg);
+      background: var(--lime);
+    }
+    .tip {
+      width: fit-content;
+      margin: 11px auto 0;
+      padding: 6px 15px;
+      border: 3px solid var(--ink);
+      border-radius: 999px;
+      background: rgb(255 230 154 / 94%);
+      color: var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+      font-size: clamp(.66rem, 1.5vw, .84rem);
+      font-weight: 800;
+      text-align: center;
+    }
+    @media (max-width: 680px), (max-height: 560px) {
+      body { padding: 8px; background-attachment: scroll; }
+      #page { width: min(96vw, calc((100vh - 76px) * 1.5 + 18px)); }
+      .school-sign { padding: 5px 16px 7px; border-width: 3px; box-shadow: 4px 5px 0 var(--ink); }
+      .school-sign span, .tip { display: none; }
+      .game-frame { padding: 6px; border-width: 3px; box-shadow: 5px 6px 0 rgb(5 25 43 / 88%); }
+      #game-shell { border-width: 3px; }
+    }
   </style>
 </head>
 <body>
-  <main id="game-shell" aria-label="Jogo Flash">
-    <div id="error" role="alert">Não foi possível iniciar o jogo. Recarregue a página em um navegador moderno.</div>
+  <main id="page">
+    <header class="school-sign">
+      <strong>Meu Amigo da Escola é um Macaco</strong>
+      <span>Uma confusão na hora do almoço</span>
+    </header>
+    <section class="game-frame">
+      <div id="game-shell" aria-label="Jogo Flash">
+        <div id="error" role="alert">Não foi possível iniciar o jogo. Recarregue a página em um navegador moderno.</div>
+      </div>
+    </section>
+    <p class="tip">Clique no jogo para ativar o teclado e o som • Use as setas e a barra de espaço</p>
   </main>
 
   <script src="./ruffle/ruffle.js"></script>
