@@ -104,47 +104,40 @@
     }
     .start-panel {
       display: grid;
-      min-height: min(48vh, 420px);
       place-items: center;
-      padding: 34px 20px;
-      border: 4px dashed rgb(8 34 58 / 72%);
-      border-radius: 12px;
-      background:
-        radial-gradient(circle at 50% 38%, rgb(255 230 154 / 32%), transparent 38%),
-        linear-gradient(145deg, #174c6d, #09283f 72%);
+      padding: 20px;
       text-align: center;
-    }
-    .start-card { max-width: 30rem; }
-    .start-card p {
-      margin: 0 0 22px;
-      color: #fff3c4;
-      font-size: clamp(.9rem, 2vw, 1.08rem);
-      font-weight: 800;
-      line-height: 1.45;
-      text-shadow: 2px 2px 0 rgb(0 0 0 / 35%);
     }
     #start-button {
       position: relative;
-      min-width: 0;
-      width: auto;
-      padding: 5px 9px 4px;
-      border: 2px solid var(--ink);
-      border-radius: 8px 6px 9px 6px;
+      min-width: min(78vw, 230px);
+      padding: 15px 34px 13px;
+      border: 4px solid var(--ink);
+      border-radius: 15px 11px 17px 10px;
       background: linear-gradient(#cbea59, var(--lime));
       color: var(--ink);
-      box-shadow: 3px 3px 0 var(--ink), inset 0 1px 0 rgb(255 255 255 / 45%);
+      box-shadow: 7px 8px 0 var(--ink), inset 0 3px 0 rgb(255 255 255 / 45%);
       cursor: pointer;
-      font: 900 clamp(.58rem, 1vw, .68rem)/1 "Trebuchet MS", system-ui, sans-serif;
-      letter-spacing: .06em;
+      font: 900 clamp(1.15rem, 3vw, 1.55rem)/1 "Trebuchet MS", system-ui, sans-serif;
+      letter-spacing: .12em;
       text-transform: uppercase;
       transform: rotate(-1deg);
       transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
     }
-    #start-button::before { content: "▶"; margin-right: 4px; color: #a43e24; font-size: .72em; }
+    #start-button::before { content: "▶"; margin-right: 10px; color: #a43e24; }
     #start-button:hover { filter: brightness(1.08); transform: rotate(1deg) translateY(-2px); }
     #start-button:active { box-shadow: 3px 4px 0 var(--ink); transform: translate(4px, 4px); }
     #start-button:focus-visible { outline: 4px solid var(--paper); outline-offset: 6px; }
-    .game-frame.is-waiting { padding: 11px; }
+    body.game-waiting .school-sign,
+    body.game-waiting .tip { display: none; }
+    .game-frame.is-waiting {
+      padding: 0;
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+    .game-frame.is-waiting::before,
+    .game-frame.is-waiting::after { display: none; }
     .game-frame.is-waiting #game-shell { display: none; }
     .game-frame.is-started .start-panel { display: none; }
     ruffle-player { width: 100%; height: 100%; display: block; }
@@ -201,7 +194,7 @@
     }
   </style>
 </head>
-<body>
+<body class="game-waiting">
   <main id="page">
     <header class="school-sign">
       <strong>Meu Amigo da Escola é um Macaco</strong>
@@ -210,7 +203,6 @@
     <section class="game-frame is-waiting" id="game-frame">
       <div class="start-panel">
         <div class="start-card">
-          <p>O sinal tocou e a confusão vai começar. Quando estiver pronto, entre no refeitório!</p>
           <button id="start-button" type="button">Iniciar</button>
         </div>
       </div>
@@ -231,6 +223,7 @@
 
       startButton.addEventListener("click", async () => {
         startButton.disabled = true;
+        document.body.classList.remove("game-waiting");
         frame.classList.remove("is-waiting");
         frame.classList.add("is-started");
 
