@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Lunchroom Rumble</title>
+  <style>
+    :root { color-scheme: dark; background: #080a0f; }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 50% 30%, #20273a 0, #0d1019 48%, #050609 100%);
+      font-family: system-ui, sans-serif;
+    }
+    #game-shell {
+      width: min(100vw, 150vh);
+      aspect-ratio: 3 / 2;
+      max-height: 100vh;
+      background: #000;
+      box-shadow: 0 18px 70px rgb(0 0 0 / 65%);
+    }
+    ruffle-player { width: 100%; height: 100%; display: block; }
+    #error { display: none; max-width: 42rem; padding: 1.25rem; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <main id="game-shell" aria-label="Jogo Flash">
+    <div id="error" role="alert">Não foi possível iniciar o jogo. Recarregue a página em um navegador moderno.</div>
+  </main>
+
+  <script src="./ruffle/ruffle.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", async () => {
+      const shell = document.querySelector("#game-shell");
+      const error = document.querySelector("#error");
+
+      try {
+        const ruffle = window.RufflePlayer.newest();
+        const player = ruffle.createPlayer();
+        player.id = "ruffle-player";
+        shell.appendChild(player);
+
+        await player.ruffle().load({
+          url: "./game/halYHS.swf",
+          autoplay: "on",
+          unmuteOverlay: "visible",
+          scale: "showAll",
+          forceScale: true,
+          letterbox: "on",
+          quality: "high",
+          backgroundColor: "#000000",
+          allowNetworking: "all"
+        });
+
+        player.focus();
+      } catch (cause) {
+        console.error("Falha ao carregar o jogo no Ruffle:", cause);
+        error.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
