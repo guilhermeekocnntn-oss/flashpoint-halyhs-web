@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
+  <link rel="icon" href="data:,">
   <title>Meu Amigo da Escola é um Macaco — Lunchroom Rumble</title>
   <style>
     :root {
@@ -183,6 +184,7 @@
 
         await player.ruffle().load({
           url: "./game/halYHS.swf",
+          base: new URL("./game/", window.location.href).href,
           autoplay: "on",
           unmuteOverlay: "visible",
           scale: "showAll",
