@@ -102,6 +102,50 @@
       background: #000;
       box-shadow: inset 0 0 24px rgb(0 0 0 / 80%);
     }
+    .start-panel {
+      display: grid;
+      min-height: min(48vh, 420px);
+      place-items: center;
+      padding: 34px 20px;
+      border: 4px dashed rgb(8 34 58 / 72%);
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 50% 38%, rgb(255 230 154 / 32%), transparent 38%),
+        linear-gradient(145deg, #174c6d, #09283f 72%);
+      text-align: center;
+    }
+    .start-card { max-width: 30rem; }
+    .start-card p {
+      margin: 0 0 22px;
+      color: #fff3c4;
+      font-size: clamp(.9rem, 2vw, 1.08rem);
+      font-weight: 800;
+      line-height: 1.45;
+      text-shadow: 2px 2px 0 rgb(0 0 0 / 35%);
+    }
+    #start-button {
+      position: relative;
+      min-width: min(78vw, 230px);
+      padding: 15px 34px 13px;
+      border: 4px solid var(--ink);
+      border-radius: 15px 11px 17px 10px;
+      background: linear-gradient(#cbea59, var(--lime));
+      color: var(--ink);
+      box-shadow: 7px 8px 0 var(--ink), inset 0 3px 0 rgb(255 255 255 / 45%);
+      cursor: pointer;
+      font: 900 clamp(1.15rem, 3vw, 1.55rem)/1 "Trebuchet MS", system-ui, sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      transform: rotate(-1deg);
+      transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+    }
+    #start-button::before { content: "▶"; margin-right: 10px; color: #a43e24; }
+    #start-button:hover { filter: brightness(1.08); transform: rotate(1deg) translateY(-2px); }
+    #start-button:active { box-shadow: 3px 4px 0 var(--ink); transform: translate(4px, 4px); }
+    #start-button:focus-visible { outline: 4px solid var(--paper); outline-offset: 6px; }
+    .game-frame.is-waiting { padding: 11px; }
+    .game-frame.is-waiting #game-shell { display: none; }
+    .game-frame.is-started .start-panel { display: none; }
     ruffle-player { width: 100%; height: 100%; display: block; }
     #error { display: none; max-width: 42rem; padding: 1.25rem; color: white; line-height: 1.5; }
     .game-frame::before,
@@ -162,7 +206,13 @@
       <strong>Meu Amigo da Escola é um Macaco</strong>
       <span>Uma confusão na hora do almoço</span>
     </header>
-    <section class="game-frame">
+    <section class="game-frame is-waiting" id="game-frame">
+      <div class="start-panel">
+        <div class="start-card">
+          <p>O sinal tocou e a confusão vai começar. Quando estiver pronto, entre no refeitório!</p>
+          <button id="start-button" type="button">Iniciar</button>
+        </div>
+      </div>
       <div id="game-shell" aria-label="Jogo Flash">
         <div id="error" role="alert">Não foi possível iniciar o jogo. Recarregue a página em um navegador moderno.</div>
       </div>
@@ -172,34 +222,42 @@
 
   <script src="./ruffle/ruffle.js"></script>
   <script>
-    window.addEventListener("DOMContentLoaded", async () => {
+    window.addEventListener("DOMContentLoaded", () => {
+      const frame = document.querySelector("#game-frame");
       const shell = document.querySelector("#game-shell");
       const error = document.querySelector("#error");
+      const startButton = document.querySelector("#start-button");
 
-      try {
-        const ruffle = window.RufflePlayer.newest();
-        const player = ruffle.createPlayer();
-        player.id = "ruffle-player";
-        shell.appendChild(player);
+      startButton.addEventListener("click", async () => {
+        startButton.disabled = true;
+        frame.classList.remove("is-waiting");
+        frame.classList.add("is-started");
 
-        await player.ruffle().load({
-          url: "./game/halYHS.swf",
-          base: new URL("./game/", window.location.href).href,
-          autoplay: "on",
-          unmuteOverlay: "visible",
-          scale: "showAll",
-          forceScale: true,
-          letterbox: "on",
-          quality: "high",
-          backgroundColor: "#000000",
-          allowNetworking: "all"
-        });
+        try {
+          const ruffle = window.RufflePlayer.newest();
+          const player = ruffle.createPlayer();
+          player.id = "ruffle-player";
+          shell.appendChild(player);
 
-        player.focus();
-      } catch (cause) {
-        console.error("Falha ao carregar o jogo no Ruffle:", cause);
-        error.style.display = "block";
-      }
+          await player.ruffle().load({
+            url: "./game/halYHS.swf",
+            base: new URL("./game/", window.location.href).href,
+            autoplay: "on",
+            unmuteOverlay: "visible",
+            scale: "showAll",
+            forceScale: true,
+            letterbox: "on",
+            quality: "high",
+            backgroundColor: "#000000",
+            allowNetworking: "all"
+          });
+
+          player.focus();
+        } catch (cause) {
+          console.error("Falha ao carregar o jogo no Ruffle:", cause);
+          error.style.display = "block";
+        }
+      }, { once: true });
     });
   </script>
 </body>
